@@ -34,7 +34,9 @@ public class MarketDataManager {
 
     private static final Map<String, List<Bar>> bars = new ConcurrentHashMap<>();
 
-    private static final int ATR_PERIOD = 14;
+    private static final Map<String, Double> atrMap = new ConcurrentHashMap<>();
+
+    private static final int ATR_PERIOD = 30;
 
     public static void onPrice(String symbol, double price, long size) {
 
@@ -83,19 +85,21 @@ public class MarketDataManager {
         bars.computeIfAbsent(symbol, k -> new ArrayList<>())
                 .add(new Bar(high, low, close));
 
-        // 限制长度，避免内存爆
-        List<Bar> list = bars.get(symbol);
-        if (list.size() > 100) {
-            list.remove(0);
-        }
     }
 
     public static double getATR(String symbol) {
+        return atrMap.getOrDefault(symbol, 0.0);
+    }
+
+    public static void initATR(String symbol) {
 
         List<Bar> list = bars.get(symbol);
+        System.out.println(
+                symbol + " list=" + bars.get(symbol)
+        );
 
         if (list == null || list.size() < ATR_PERIOD + 1) {
-            return 0;
+            return ;
         }
 
         double sumTR = 0;
@@ -116,6 +120,8 @@ public class MarketDataManager {
             sumTR += tr;
         }
 
-        return sumTR / ATR_PERIOD;
+        atrMap.put(symbol,sumTR / ATR_PERIOD);
+
+        bars.remove(symbol);
     }
 }

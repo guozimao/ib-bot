@@ -33,10 +33,9 @@ public class Main {
             for (String symbol : SymbolConfig.CONFIG.keySet()) {
 
                 ShouldBuyResult result = strategy.shouldBuy(symbol);
-
                 if (result.isResult()) {
 
-                    orderManager.buy(symbol, result.getDecision(), Decimal.get(10), rm);
+                    orderManager.buy(symbol, result.getDecision(), rm);
 
                 }
             }

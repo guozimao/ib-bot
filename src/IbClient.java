@@ -118,7 +118,7 @@ public class IbClient extends EWrapperAdapter{
 
         tickerMap.put(id, symbol);
 
-        client.reqMarketDataType(3);
+        client.reqMarketDataType(MarketDataType.DELAYED_FROZEN.getValue());
 
         client.reqMktData(id, contract, "", false, false, null);
 
@@ -148,6 +148,8 @@ public class IbClient extends EWrapperAdapter{
 
             int reqId = tickerId++;
 
+            tickerMap.put(reqId, symbol);
+
             client.reqHistoricalData(
                     reqId,
                     contract,
@@ -161,6 +163,19 @@ public class IbClient extends EWrapperAdapter{
                     null
             );
         }
+    }
+
+    @Override
+    public void historicalDataEnd(
+            int reqId,
+            String start,
+            String end) {
+
+        String symbol = tickerMap.get(reqId);
+
+        System.out.println(symbol + " 历史数据接收完成");
+
+        MarketDataManager.initATR(symbol);
     }
 
     public void requestAccountData() {
