@@ -21,7 +21,7 @@ public class Strategy {
         double vwap = MarketDataManager.getVWAP(symbol);
         long volume = MarketDataManager.getVolume(symbol);
 
-        if (price == 0.0) return new ShouldBuyResult(false, null);
+        if (price <= 0.0) return new ShouldBuyResult(false, null);
 
         if (bought.getOrDefault(symbol, false)) return new ShouldBuyResult(false, null);
 

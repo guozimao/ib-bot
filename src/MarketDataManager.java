@@ -94,9 +94,6 @@ public class MarketDataManager {
     public static void initATR(String symbol) {
 
         List<Bar> list = bars.get(symbol);
-        System.out.println(
-                symbol + " list=" + bars.get(symbol)
-        );
 
         if (list == null || list.size() < ATR_PERIOD + 1) {
             return ;
@@ -121,6 +118,7 @@ public class MarketDataManager {
         }
 
         atrMap.put(symbol,sumTR / ATR_PERIOD);
+        System.out.println(symbol + ":ATR " + atrMap.get(symbol));
 
         bars.remove(symbol);
     }

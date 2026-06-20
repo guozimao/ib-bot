@@ -173,8 +173,6 @@ public class IbClient extends EWrapperAdapter{
 
         String symbol = tickerMap.get(reqId);
 
-        System.out.println(symbol + " 历史数据接收完成");
-
         MarketDataManager.initATR(symbol);
     }
 
