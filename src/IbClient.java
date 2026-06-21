@@ -66,7 +66,9 @@ public class IbClient extends EWrapperAdapter{
 
         accountData.put(tag, value);
 
-        System.out.println("ACCOUNT → " + tag + " = " + value);
+        System.out.println(
+                account + " " + tag + "=" + value
+        );
     }
 
     @Override
@@ -102,7 +104,15 @@ public class IbClient extends EWrapperAdapter{
         // ⭐ 关键3：主动请求一次（触发 nextValidId）
         client.reqIds(-1);
 
-        System.out.println("✅ Connected to IB Gateway");
+        while (!idReady) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        System.out.println("✅ IB Ready");
     }
 
     public void subscribeMarketData(String symbol) {

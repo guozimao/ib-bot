@@ -22,13 +22,15 @@ public class Main {
         // 订阅行情
         SymbolConfig.CONFIG.keySet().forEach(ib::subscribeMarketData);
 
-        System.out.println("🚀 Scanner started...");
+        RiskManager rm = new RiskManager();
 
-        double accountSize = ib.getAccountEquity();
-        RiskManager rm = new RiskManager(accountSize);
+        System.out.println("🚀 Scanner started...");
 
         // 每秒扫描
         while (true) {
+
+            double accountSize = ib.getAccountEquity();
+            rm.setAccountSize(accountSize);
 
             for (String symbol : SymbolConfig.CONFIG.keySet()) {
 
