@@ -52,11 +52,12 @@ public class OrderManager {
         // =====================
         // Take Profit（止盈）
         // =====================
+        double tpPrice = d.refPrice * 1.30; // +30%
         Order tp = new Order();
         tp.orderId(tpId);
         tp.action("SELL");
         tp.orderType("LMT");
-        tp.lmtPrice(d.refPrice * 1.30); // +30%
+        tp.lmtPrice(tpPrice);
         tp.totalQuantity(qty);
         tp.parentId(parentId);
         tp.transmit(false);
@@ -77,6 +78,46 @@ public class OrderManager {
         ib.client().placeOrder(tpId, contract, tp);
         ib.client().placeOrder(slId, contract, sl);
 
+        saveTradeLog(symbol, parent.getOrderType(), d.refPrice, stop, tpPrice, atr, qty, accountSize, parentId, "OPEN");
+
         System.out.println("📦 BRACKET SENT: " + symbol);
+    }
+
+    private void saveTradeLog(String symbol, String orderType, double refPrice, double stop, double tpPrice, double atr, Decimal qty, double accountSize, int parentId, String status) {
+        TradeLog log = new TradeLog();
+
+        log.setSymbol(symbol);
+
+        log.setEntryTime(
+                java.time.LocalDateTime.now().toString()
+        );
+
+        log.setOrderType(orderType);
+
+        log.setEntryPrice(refPrice);
+
+        log.setStopPrice(stop);
+
+        log.setTakeProfitPrice(tpPrice);
+
+        log.setAtr(atr);
+
+        log.setQuantity((int) qty.longValue());
+
+        log.setAccountSize(accountSize);
+
+        log.setOrderId(parentId);
+
+        log.setStatus(status);
+
+        PositionCache.put(symbol, log);
+
+        new TradeLogRepository().save(log);
+    }
+
+    public void closeTrade(String symbol, double exitPrice, String reason) {
+
+        new TradeLogRepository().closeTrade(symbol, exitPrice, reason);
+
     }
 }

@@ -1,12 +1,7 @@
-import java.util.HashMap;
-import java.util.Map;
-
 public class Strategy {
     private final MarketDataManager market;
     private final IbClient ib;
 
-    // 防重复下单
-    private final Map<String, Boolean> bought = new HashMap<>();
 
     public Strategy(MarketDataManager market, IbClient ib) {
         this.market = market;
@@ -23,7 +18,8 @@ public class Strategy {
 
         if (price <= 0.0) return new ShouldBuyResult(false, null);
 
-        if (bought.getOrDefault(symbol, false)) return new ShouldBuyResult(false, null);
+        // 防止重复下单
+        if (PositionCache.get(symbol) != null) return new ShouldBuyResult(false, null);
 
         boolean breakout = price > high * 1.001;
         boolean vwapOk = price > vwap;
@@ -31,8 +27,6 @@ public class Strategy {
         ExecutionDecision decision = decide(price, vwap, volume, MarketDataManager.getAvgVolume(symbol), breakout);
 
         if (breakout && (vwapOk || volumeOk)) {
-
-            bought.put(symbol, true);
 
             System.out.println("🔥 BUY " + symbol +
                     " price=" + price +
