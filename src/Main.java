@@ -25,15 +25,12 @@ public class Main {
         // 每秒扫描
         while (true) {
 
-            double accountSize = ib.getAccountEquity();
-            rm.setAccountSize(accountSize);
-
             for (String symbol : SymbolConfig.CONFIG.keySet()) {
 
                 ShouldBuyResult result = strategy.shouldBuy(symbol);
                 if (result.isResult()) {
 
-                    orderManager.buy(symbol, result.getDecision(), rm);
+                    orderManager.buy(symbol, result.getDecision(), rm, ib);
 
                 }
             }

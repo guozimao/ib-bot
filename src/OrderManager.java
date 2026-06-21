@@ -10,9 +10,11 @@ public class OrderManager {
         this.ib = ib;
     }
 
-    public void buy(String symbol, ExecutionDecision d, RiskManager rm) {
+    public void buy(String symbol, ExecutionDecision d, RiskManager rm, IbClient ib) {
 
         if (d.type == ExecutionDecision.Type.SKIP) return;
+
+        double accountSize = ib.getAccountEquity();
 
         Contract contract = new Contract();
         contract.symbol(symbol);
@@ -26,7 +28,7 @@ public class OrderManager {
 
         double atr = MarketDataManager.getATR(symbol);
         double stop = Math.max(0, rm.calcStop(d.refPrice, atr, 2.0));;  // RiskManager 计算止损
-        Decimal qty = Decimal.get(rm.calcPositionSize(d.refPrice, stop));  // 计算仓位
+        Decimal qty = Decimal.get(rm.calcPositionSize(d.refPrice, stop, accountSize));  // 计算仓位
 
         // =====================
         // Parent（MKT / LMT）

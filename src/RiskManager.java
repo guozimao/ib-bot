@@ -1,19 +1,8 @@
 public class RiskManager {
     // ====== 账户参数 ======
-    private volatile double accountSize;
     private final double riskPerTrade = 0.01; // 每笔1%
 
     public RiskManager() {
-    }
-
-    public double getAccountSize() {
-        return accountSize;
-    }
-
-    public void setAccountSize(double accountSize) {
-        if (accountSize > 0) {
-            this.accountSize = accountSize;
-        }
     }
 
     // =========================
@@ -26,7 +15,7 @@ public class RiskManager {
     // =========================
     // 2️⃣ 仓位计算（核心）
     // =========================
-    public int calcPositionSize(double price, double stopPrice) {
+    public int calcPositionSize(double price, double stopPrice, double accountSize) {
 
         double riskPerTradeUSD = accountSize * riskPerTrade;
 
