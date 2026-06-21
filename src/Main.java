@@ -4,6 +4,13 @@ public class Main {
         IbClient ib = new IbClient();
         ib.connect();
 
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(() -> {
+                    System.out.println("🛑 Program stopping...");
+                    ib.disconnect();
+                })
+        );
+
         MarketDataManager market = new MarketDataManager();
         Strategy strategy = new Strategy(market, ib);
 

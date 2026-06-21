@@ -203,4 +203,12 @@ public class IbClient extends EWrapperAdapter{
 
         return Double.parseDouble(val);
     }
+
+    public void disconnect() {
+
+        if (client != null && client.isConnected()) {
+            System.out.println("🔌 Disconnecting IB...");
+            client.eDisconnect();
+        }
+    }
 }
