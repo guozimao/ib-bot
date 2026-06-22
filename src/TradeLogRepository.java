@@ -1,6 +1,8 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TradeLogRepository {
     public void save(TradeLog log) {
@@ -19,7 +21,7 @@ public class TradeLogRepository {
                     order_id,
                     status
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, datetime('now','localtime'), ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try (
@@ -29,16 +31,15 @@ public class TradeLogRepository {
         ) {
 
             ps.setString(1, log.getSymbol());
-            ps.setString(2, log.getEntryTime());
-            ps.setString(3, log.getOrderType());
-            ps.setDouble(4, log.getEntryPrice());
-            ps.setDouble(5, log.getStopPrice());
-            ps.setDouble(6, log.getTakeProfitPrice());
-            ps.setDouble(7, log.getAtr());
-            ps.setInt(8, log.getQuantity());
-            ps.setDouble(9, log.getAccountSize());
-            ps.setInt(10, log.getOrderId());
-            ps.setString(11, log.getStatus());
+            ps.setString(2, log.getOrderType());
+            ps.setDouble(3, log.getEntryPrice());
+            ps.setDouble(4, log.getStopPrice());
+            ps.setDouble(5, log.getTakeProfitPrice());
+            ps.setDouble(6, log.getAtr());
+            ps.setInt(7, log.getQuantity());
+            ps.setDouble(8, log.getAccountSize());
+            ps.setInt(9, log.getOrderId());
+            ps.setString(10, log.getStatus());
 
             ps.executeUpdate();
 
@@ -59,7 +60,7 @@ public class TradeLogRepository {
             UPDATE trade_log
             SET exit_price = ?,
                 pnl = ?,
-                exit_time = datetime('now'),
+                exit_time = datetime('now','localtime'),
                 exit_reason = ?,
                 status = 'CLOSED'
             WHERE symbol = ? AND status = 'OPEN'
@@ -137,5 +138,58 @@ public class TradeLogRepository {
         }
 
         return null;
+    }
+
+    public List<TradeLog> getAllOpenTrade() {
+        List<TradeLog> result = new ArrayList<>();
+
+        String sql = """
+            SELECT *
+            FROM trade_log
+            WHERE status = 'OPEN'
+        """;
+
+        try (Connection conn = DbManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+
+                TradeLog log = new TradeLog();
+
+                log.setSymbol(rs.getString("symbol"));
+
+                log.setEntryTime(rs.getString("entry_time"));
+
+                log.setOrderType(rs.getString("order_type"));
+
+                log.setEntryPrice(rs.getDouble("entry_price"));
+                log.setStopPrice(rs.getDouble("stop_price"));
+                log.setTakeProfitPrice(rs.getDouble("take_profit_price"));
+
+                log.setAtr(rs.getDouble("atr"));
+
+                log.setQuantity(rs.getInt("quantity"));
+
+                log.setAccountSize(rs.getDouble("account_size"));
+
+                log.setOrderId(rs.getInt("order_id"));
+
+                log.setStatus(rs.getString("status"));
+
+                log.setExitPrice(rs.getDouble("exit_price"));
+
+                log.setPnl(rs.getDouble("pnl"));
+
+                log.setExitTime(rs.getString("exit_time"));
+
+                result.add(log);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }

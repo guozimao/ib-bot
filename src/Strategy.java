@@ -26,7 +26,7 @@ public class Strategy {
         boolean volumeOk = volume > MarketDataManager.getAvgVolume(symbol) * 1.5;
         ExecutionDecision decision = decide(price, vwap, volume, MarketDataManager.getAvgVolume(symbol), breakout);
 
-        if (breakout && (vwapOk || volumeOk)) {
+        if (breakout && vwapOk && volumeOk) {
 
             System.out.println("🔥 BUY " + symbol +
                     " price=" + price +

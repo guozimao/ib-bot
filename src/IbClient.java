@@ -25,7 +25,7 @@ public class IbClient extends EWrapperAdapter{
     @Override
     public void tickPrice(int reqId, int field, double price, TickAttrib attrib) {
 
-        System.out.println("TICK → " + reqId + " field=" + field + " price=" + price);
+        //System.out.println("TICK → " + reqId + " field=" + field + " price=" + price);
 
         if (field == TickType.LAST.index()) {
 

@@ -15,6 +15,15 @@ public class OrderManager {
         if (d.type == ExecutionDecision.Type.SKIP) return;
 
         double accountSize = ib.getAccountEquity();
+        double atr = MarketDataManager.getATR(symbol);
+        double stop = Math.max(0, rm.calcStop(d.refPrice, atr, 2.0));;  // RiskManager 计算止损
+        Decimal qty = Decimal.get(rm.calcPositionSize(d.refPrice, stop, accountSize));  // 计算仓位
+
+        if (qty.longValue() <= 0) {
+            System.out.println(
+                    "仓位为0，跳过交易: " + symbol);
+            return;
+        }
 
         Contract contract = new Contract();
         contract.symbol(symbol);
@@ -25,10 +34,6 @@ public class OrderManager {
         int parentId = ib.getNextOrderId();
         int tpId = ib.getNextOrderId();
         int slId = ib.getNextOrderId();
-
-        double atr = MarketDataManager.getATR(symbol);
-        double stop = Math.max(0, rm.calcStop(d.refPrice, atr, 2.0));;  // RiskManager 计算止损
-        Decimal qty = Decimal.get(rm.calcPositionSize(d.refPrice, stop, accountSize));  // 计算仓位
 
         // =====================
         // Parent（MKT / LMT）
@@ -87,10 +92,6 @@ public class OrderManager {
         TradeLog log = new TradeLog();
 
         log.setSymbol(symbol);
-
-        log.setEntryTime(
-                java.time.LocalDateTime.now().toString()
-        );
 
         log.setOrderType(orderType);
 

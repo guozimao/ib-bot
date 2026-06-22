@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -7,12 +8,10 @@ public class Main {
 
         TradeLogRepository tradeLogRepository = new TradeLogRepository();
 
-        SymbolConfig.CONFIG.keySet().forEach(symbol -> {
-            TradeLog log = tradeLogRepository.getOpenTrade(symbol);
-            if (log != null){
-                PositionCache.put(symbol, log);
-            }
-        });
+        // 恢复所有未平仓记录
+        List<TradeLog> openTrades = tradeLogRepository.getAllOpenTrade();
+
+        openTrades.forEach(log -> PositionCache.put(log.getSymbol(), log));
 
         IbClient ib = new IbClient();
         ib.connect();
