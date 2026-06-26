@@ -6,7 +6,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class IbClient extends EWrapperAdapter{
-    private EClientSocket client;
+    private  EClientSocket client;
+
+    private final PositionManager positionManager =
+            new PositionManager(this);
 
     private final Map<Integer, String> tickerMap = new HashMap<>();
 
@@ -164,8 +167,8 @@ public class IbClient extends EWrapperAdapter{
                     reqId,
                     contract,
                     "",
-                    "2 D",
-                    "1 min",
+                    "40 D",
+                    "1 day",
                     "TRADES",
                     1,
                     1,
@@ -184,6 +187,21 @@ public class IbClient extends EWrapperAdapter{
         String symbol = tickerMap.get(reqId);
 
         MarketDataManager.initATR(symbol);
+
+        // 更新所有stop loss订单的止损值
+        positionManager.updateStops(symbol);
+    }
+
+    public void modifyOrder(
+            Contract contract,
+            Order order){
+
+        client.placeOrder(
+                order.orderId(),
+                contract,
+                order
+        );
+
     }
 
     public void requestAccountData() {

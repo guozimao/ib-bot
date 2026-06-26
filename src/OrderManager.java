@@ -83,12 +83,12 @@ public class OrderManager {
         ib.client().placeOrder(tpId, contract, tp);
         ib.client().placeOrder(slId, contract, sl);
 
-        saveTradeLog(symbol, parent.getOrderType(), d.refPrice, stop, tpPrice, atr, qty, accountSize, parentId, "OPEN");
+        saveTradeLog(symbol, parent.getOrderType(), d.refPrice, slId, stop, tpId, tpPrice, atr, qty, accountSize, parentId, "OPEN");
 
         System.out.println("📦 BRACKET SENT: " + symbol);
     }
 
-    private void saveTradeLog(String symbol, String orderType, double refPrice, double stop, double tpPrice, double atr, Decimal qty, double accountSize, int parentId, String status) {
+    private void saveTradeLog(String symbol, String orderType, double refPrice ,int slId ,double stop, int tpId, double tpPrice, double atr, Decimal qty, double accountSize, int parentId, String status) {
         TradeLog log = new TradeLog();
 
         log.setSymbol(symbol);
@@ -97,7 +97,11 @@ public class OrderManager {
 
         log.setEntryPrice(refPrice);
 
+        log.setStopOrderId(slId);
+
         log.setStopPrice(stop);
+
+        log.setTakeProfitOrderId(tpId);
 
         log.setTakeProfitPrice(tpPrice);
 

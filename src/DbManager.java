@@ -27,7 +27,11 @@ public class DbManager {
 
                     entry_price REAL NOT NULL,
 
+                    stop_order_id INTEGER NOT NULL,
+
                     stop_price REAL NOT NULL,
+
+                    take_profit_order_id INTEGER NOT NULL,
 
                     take_profit_price REAL NOT NULL,
 

@@ -31,10 +31,22 @@ public class TradeLog {
     private double entryPrice;
 
     /**
+     * 止损Id
+     *
+     * */
+    private int stopOrderId;
+
+    /**
      * ATR止损价
      *
      * */
     private double stopPrice;
+
+    /**
+     * 止盈Id
+     *
+     * */
+    private int takeProfitOrderId;
 
     /**
      * 止盈价
@@ -102,6 +114,7 @@ public class TradeLog {
      *
      * */
     private String exitReason;
+
 
     public String getSymbol() {
         return symbol;
@@ -221,5 +234,21 @@ public class TradeLog {
 
     public void setExitReason(String exitReason) {
         this.exitReason = exitReason;
+    }
+
+    public int getStopOrderId() {
+        return stopOrderId;
+    }
+
+    public void setStopOrderId(int stopOrderId) {
+        this.stopOrderId = stopOrderId;
+    }
+
+    public int getTakeProfitOrderId() {
+        return takeProfitOrderId;
+    }
+
+    public void setTakeProfitOrderId(int takeProfitOrderId) {
+        this.takeProfitOrderId = takeProfitOrderId;
     }
 }
