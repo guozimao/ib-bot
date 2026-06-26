@@ -52,7 +52,7 @@ public class OrderManager {
             parent.lmtPrice(d.limitPrice);
         }
 
-        parent.transmit(false);
+        //parent.transmit(false);
 
         // =====================
         // Take Profit（止盈）
@@ -65,7 +65,7 @@ public class OrderManager {
         tp.lmtPrice(tpPrice);
         tp.totalQuantity(qty);
         tp.parentId(parentId);
-        tp.transmit(false);
+        //tp.transmit(false);
 
         // =====================
         // Stop Loss（止损）
@@ -77,11 +77,11 @@ public class OrderManager {
         sl.auxPrice(stop);
         sl.totalQuantity(qty);
         sl.parentId(parentId);
-        sl.transmit(true);
+        //sl.transmit(true);
 
-        ib.client().placeOrder(parentId, contract, parent);
-        ib.client().placeOrder(tpId, contract, tp);
-        ib.client().placeOrder(slId, contract, sl);
+        //ib.client().placeOrder(parentId, contract, parent);
+        //ib.client().placeOrder(tpId, contract, tp);
+        //ib.client().placeOrder(slId, contract, sl);
 
         saveTradeLog(symbol, parent.getOrderType(), d.refPrice, slId, stop, tpId, tpPrice, atr, qty, accountSize, parentId, "OPEN");
 

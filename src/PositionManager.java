@@ -17,6 +17,10 @@ public class PositionManager {
 
     private void updateStop(TradeLog log){
 
+        if(log == null){
+            return;
+        }
+
         String symbol = log.getSymbol();
 
         double close = MarketDataManager.getClose(symbol);

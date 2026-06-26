@@ -28,7 +28,7 @@ public class IbClient extends EWrapperAdapter{
     @Override
     public void tickPrice(int reqId, int field, double price, TickAttrib attrib) {
 
-        //System.out.println("TICK → " + reqId + " field=" + field + " price=" + price);
+        System.out.println("TICK → " + reqId + " field=" + field + " price=" + price);
 
         if (field == TickType.LAST.index()) {
 
@@ -82,11 +82,26 @@ public class IbClient extends EWrapperAdapter{
         this.idReady = true;
     }
 
+    @Override
+    public void error(int id,
+                      long errorCode,
+                      int advancedOrderRejectJson,
+                      String errorMsg,
+                      String advancedOrderRejectJsonText) {
+
+        System.out.println(
+                "ERROR id=" + id +
+                        " code=" + errorCode +
+                        " msg=" + errorMsg
+        );
+
+    }
+
     public void connect() {
 
         client = new EClientSocket(this, signal);
 
-        client.eConnect("127.0.0.1", 4002, 1);
+        client.eConnect("127.0.0.1", 4001, 1);
 
         // ⭐ 关键1：创建 reader
         reader = new EReader(client, signal);
@@ -131,7 +146,7 @@ public class IbClient extends EWrapperAdapter{
 
         tickerMap.put(id, symbol);
 
-        client.reqMarketDataType(MarketDataType.DELAYED_FROZEN.getValue());
+        client.reqMarketDataType(MarketDataType.LIVE.getValue());
 
         client.reqMktData(id, contract, "", false, false, null);
 
